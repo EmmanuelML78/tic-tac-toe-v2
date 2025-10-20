@@ -185,18 +185,13 @@ async def main():
         # Create tables
         await create_tables()
         
-        # Create initial data
-        await create_admin_user()
-        await create_test_users()
-        
         print("\n" + "=" * 60)
         print("[OK] MIGRATION COMPLETED SUCCESSFULLY!")
         print("=" * 60)
-        print("\nYou can now start the application with:")
+        print("\nDatabase created with empty tables.")
+        print("You can now start the application with:")
         print("  python run.py")
-        print("\nDefault credentials:")
-        print("  Admin - username: admin, password: admin123")
-        print("  Test users - username: player1/player2/testuser, password: test123")
+        print("\nRegister new users through the application interface.")
         
     except Exception as e:
         print(f"\n[ERROR] Migration failed: {e}")
