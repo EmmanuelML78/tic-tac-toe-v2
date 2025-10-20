@@ -11,12 +11,11 @@
     <div class="container">
         <div class="game-header">
             <button onclick="returnToLobby()" class="btn btn-danger">Leave Game</button>
-            <h1>🎮 Tic-Tac-Toe</h1>
+            <h1>Tic Tac Toe Capstone Computer Network II</h1>
             <div id="game-status"></div>
         </div>
 
         <div class="game-container">
-            <!-- Game Board -->
             <div class="game-board-section">
                 <div class="players-info">
                     <div id="player1-info" class="player-info">
@@ -61,7 +60,6 @@
         </div>
     </div>
 
-    <!-- Game Over Modal -->
     <div id="game-over-modal" class="modal" style="display: none;">
         <div class="modal-content">
             <h2 id="game-result-title">Game Over!</h2>
@@ -77,7 +75,6 @@
         <p>Connecting...</p>
     </div>
 
-    <!-- Socket.IO Client -->
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
     <script src="../js/config.js"></script>
     <script src="../js/utils/notifications.js"></script>
