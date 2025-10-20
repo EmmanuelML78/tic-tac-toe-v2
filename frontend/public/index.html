@@ -3,88 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tic Tac Toe Multiplayer - Login</title>
+    <title>Computer Networks II Capstone - Tic Tac Toe</title>
     <link rel="stylesheet" href="../css/main.css">
-    <link rel="stylesheet" href="../css/auth.css">
+    <link rel="stylesheet" href="../css/index.css">
 </head>
 <body>
     <div class="container">
-        <div class="auth-container">
-            <h1> Tic Tac Toe</h1>
-            <p class="subtitle">Network Multiplayer Game - Capstone Project</p>
+        <div class="main-container">
+            <h1 class="main-title">Computer Networks II Capstone</h1>
 
-            <div id="loginForm" class="auth-form">
-                <h2>Login</h2>
-                <form id="login-form">
-                    <div class="form-group">
-                        <label for="login-username">Username</label>
-                        <input type="text" id="login-username" required autocomplete="username">
-                    </div>
-                    <div class="form-group">
-                        <label for="login-password">Password</label>
-                        <input type="password" id="login-password" required autocomplete="current-password">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Login</button>
-                    <p class="form-switch">
-                        Don't have an account? <a href="#" id="show-register">Register</a>
-                    </p>
-                </form>
+            <div class="auth-buttons">
+                <a href="login.html" class="btn btn-primary auth-btn">Login</a>
+                <a href="register.html" class="btn btn-secondary auth-btn">Register</a>
+            </div>
+            
+            <div class="content-section">
+                <h2>Multiplayer Tic Tac Toe Game</h2>
+                <p>A real-time multiplayer tic-tac-toe game built with modern web technologies and network programming concepts for Computer Networks II course.</p>
+                <br>
+                <p><strong>Features:</strong></p>
+                <ul style="text-align: left; display: inline-block; margin-top: 10px;">
+                    <li>Real-time multiplayer gameplay</li>
+                    <li>WebSocket-based communication</li>
+                    <li>User authentication system</li>
+                    <li>Game lobby with matchmaking</li>
+                    <li>Responsive web interface</li>
+                </ul>
             </div>
 
-            <div id="registerForm" class="auth-form" style="display: none;">
-                <h2>Register</h2>
-                <form id="register-form">
-                    <div class="form-group">
-                        <label for="register-username">Username</label>
-                        <input type="text" id="register-username" required autocomplete="username">
-                        <small>3-20 characters, letters, numbers, and underscores only</small>
-                    </div>
-                    <div class="form-group">
-                        <label for="register-email">Email (optional)</label>
-                        <input type="email" id="register-email" autocomplete="email">
-                    </div>
-                    <div class="form-group">
-                        <label for="register-password">Password</label>
-                        <input type="password" id="register-password" required autocomplete="new-password">
-                        <small>At least 6 characters</small>
-                    </div>
-                    <div class="form-group">
-                        <label for="register-password-confirm">Confirm Password</label>
-                        <input type="password" id="register-password-confirm" required autocomplete="new-password">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Register</button>
-                    <p class="form-switch">
-                        Already have an account? <a href="#" id="show-login">Login</a>
-                    </p>
-                </form>
+            <div class="developers-section">
+                <h3 class="developers-title">Developers</h3>
+                <div class="developer-name">Oscar Barajas Cabrera</div>
+                <div class="developer-name">Emmanuel Medina</div>
             </div>
 
-            <div id="error-message" class="error-message" style="display: none;"></div>
-            <div id="loading" class="loading" style="display: none;">
-                <div class="spinner"></div>
-                <p>Please wait...</p>
+            <div class="tools-section">
+                <h3 class="tools-title">Tools & Technologies</h3>
+                <div class="tools-grid">
+                    <div class="tool-category">
+                        <h4>Frontend</h4>
+                        <ul class="tool-list">
+                            <li>HTML & CSS</li>
+                            <li>JavaScript</li>
+                            <li>WebSocket Client</li>
+                            <li>Docker</li>
+                        </ul>
+                    </div>
+                    <div class="tool-category">
+                        <h4>Backend</h4>
+                        <ul class="tool-list">
+                            <li>Python</li>
+                            <li>Flask Framework</li>
+                            <li>WebSocket Server</li>
+                            <li>SQLite Database</li>
+                            <li>Docker</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-
-    <script src="../js/config.js"></script>
-    <script src="../js/utils/notifications.js"></script>
-    <script src="../js/auth/login.js"></script>
-    <script src="../js/auth/register.js"></script>
-    <script>
-        document.getElementById('show-register').addEventListener('click', (e) => {
-            e.preventDefault();
-            document.getElementById('loginForm').style.display = 'none';
-            document.getElementById('registerForm').style.display = 'block';
-            document.getElementById('error-message').style.display = 'none';
-        });
-
-        document.getElementById('show-login').addEventListener('click', (e) => {
-            e.preventDefault();
-            document.getElementById('registerForm').style.display = 'none';
-            document.getElementById('loginForm').style.display = 'block';
-            document.getElementById('error-message').style.display = 'none';
-        });
-    </script>
 </body>
 </html>

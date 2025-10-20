@@ -206,15 +206,15 @@ function handleGameOver(data) {
 
   if (data.result === "win") {
     if (data.winner_id == userInfo.userId) {
-      title.textContent = "🎉 Victory!";
+      title.textContent = "Congratulations, victory is yours!";
       title.style.color = "#4caf50";
       message.textContent = "Congratulations! You won the game!";
     } else {
-      title.textContent = "😔 Defeat";
+      title.textContent = "😔 Oh you've lost";
       title.style.color = "#f44336";
       message.textContent = "Better luck next time!";
     }
-  } else if (data.result === "draw") {
+  } else if (data.result === "You're good, you tied") {
     title.textContent = "🤝 Draw";
     title.style.color = "#ff9800";
     message.textContent = "It's a tie! Good game!";
@@ -238,7 +238,7 @@ function handleGameForfeited(data) {
     title.style.color = "#f44336";
     message.textContent = "You have left the game.";
   } else {
-    title.textContent = "🎉 Victory!";
+    title.textContent = "🎉 Congratulations, victory is yours!!";
     title.style.color = "#4caf50";
     message.textContent = "Opponent forfeited. You win!";
   }

@@ -20,13 +20,15 @@
     text-align: center;
     color: #666;
     margin-bottom: 30px;
-    font-size: 14px;
+    font-size: 16px;
+    font-weight: 500;
 }
 
 .auth-form h2 {
     color: var(--darker-bg);
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     text-align: center;
+    font-size: 24px;
 }
 
 .form-group {
@@ -46,12 +48,13 @@
     border: 2px solid var(--border-color);
     border-radius: 8px;
     font-size: 16px;
-    transition: border-color 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .form-group input:focus {
     outline: none;
     border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
 }
 
 .form-group small {
@@ -64,11 +67,17 @@
 .auth-form button[type="submit"] {
     width: 100%;
     margin-top: 10px;
+    font-size: 18px;
+    padding: 14px;
+}
+
+.form-links {
+    margin-top: 20px;
 }
 
 .form-switch {
     text-align: center;
-    margin-top: 20px;
+    margin: 10px 0;
     color: #666;
 }
 
@@ -76,10 +85,12 @@
     color: var(--primary-color);
     text-decoration: none;
     font-weight: 600;
+    transition: all 0.3s ease;
 }
 
 .form-switch a:hover {
     text-decoration: underline;
+    color: #357ABD;
 }
 
 @media (max-width: 768px) {

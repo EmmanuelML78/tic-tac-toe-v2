@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Tic Tac Toe Multiplayer</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/auth.css">
+</head>
+<body>
+    <div class="container">
+        <div class="auth-container">
+            <h1>Tic Tac Toe</h1>
+            <p class="subtitle">Network Multiplayer Game - Login</p>
+
+            <div class="auth-form">
+                <h2>Login to Your Account</h2>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="login-username">Username</label>
+                        <input type="text" id="login-username" required autocomplete="username">
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" required autocomplete="current-password">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                    <div class="form-links">
+                        <p class="form-switch">
+                            Don't have an account? <a href="register.html">Register here</a>
+                        </p>
+                        <p class="form-switch">
+                            <a href="index.html">← Back to Home</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+
+            <div id="error-message" class="error-message" style="display: none;"></div>
+            <div id="loading" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>Logging in...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/utils/notifications.js"></script>
+    <script src="../js/auth/login.js"></script>
+</body>
+</html>

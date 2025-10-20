@@ -1,7 +1,5 @@
-/* Main CSS - Global Styles */
-
 :root {
-    --primary-color: #4A90E2;
+    --primary-color: #088a2f;
     --secondary-color: #50C878;
     --danger-color: #E74C3C;
     --warning-color: #F39C12;
@@ -99,7 +97,6 @@ body {
     transform: none;
 }
 
-/* Loading Spinner */
 .loading {
     text-align: center;
     padding: 20px;
@@ -120,7 +117,6 @@ body {
     100% { transform: rotate(360deg); }
 }
 
-/* Error/Success Messages */
 .error-message {
     background-color: #ffe6e6;
     color: var(--danger-color);
@@ -139,7 +135,6 @@ body {
     border-left: 4px solid var(--secondary-color);
 }
 
-/* Notification Toast */
 .notification {
     position: fixed;
     top: 20px;
@@ -187,7 +182,6 @@ body {
     }
 }
 
-/* Card */
 .card {
     background: white;
     border-radius: 12px;
@@ -206,7 +200,6 @@ body {
     color: var(--text-dark);
 }
 
-/* Utility Classes */
 .text-center {
     text-align: center;
 }

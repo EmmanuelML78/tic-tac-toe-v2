@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Tic Tac Toe Multiplayer</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/auth.css">
+</head>
+<body>
+    <div class="container">
+        <div class="auth-container">
+            <h1>Tic Tac Toe</h1>
+            <p class="subtitle">Network Multiplayer Game - Register</p>
+
+            <div class="auth-form">
+                <h2>Create Your Account</h2>
+                <form id="register-form">
+                    <div class="form-group">
+                        <label for="register-username">Username</label>
+                        <input type="text" id="register-username" required autocomplete="username">
+                        <small>3-20 characters, letters, numbers, and underscores only</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-email">Email</label>
+                        <input type="email" id="register-email" autocomplete="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">Password</label>
+                        <input type="password" id="register-password" required autocomplete="new-password">
+                        <small>At least 6 characters</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password-confirm">Confirm Password</label>
+                        <input type="password" id="register-password-confirm" required autocomplete="new-password">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Register</button>
+                    <div class="form-links">
+                        <p class="form-switch">
+                            Already have an account? <a href="login.html">Login here</a>
+                        </p>
+                        <p class="form-switch">
+                            <a href="index.html">← Back to Home</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+
+            <div id="error-message" class="error-message" style="display: none;"></div>
+            <div id="loading" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>Creating account...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/utils/notifications.js"></script>
+    <script src="../js/auth/register.js"></script>
+</body>
+</html>
