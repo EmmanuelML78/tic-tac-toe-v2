@@ -1,30 +1,18 @@
-/**
- * Frontend Configuration
- */
-
 const CONFIG = {
-    // API Base URL
     API_URL: 'http://localhost:8000',
-
-    // Socket.IO URL
     SOCKET_URL: 'http://localhost:8000',
-
-    // Local storage keys
     STORAGE_KEYS: {
         TOKEN: 'tictactoe_token',
         USER_ID: 'tictactoe_user_id',
         USERNAME: 'tictactoe_username'
     },
-
-    // Game settings
     GAME: {
-        MOVE_TIMEOUT: 30000, // 30 seconds per move
+        MOVE_TIMEOUT: 30000,
         BOARD_SIZE: 3,
         BOT_DIFFICULTIES: ['easy', 'medium', 'hard']
     }
 };
 
-// Utility functions for local storage
 const Storage = {
     setToken(token) {
         localStorage.setItem(CONFIG.STORAGE_KEYS.TOKEN, token);

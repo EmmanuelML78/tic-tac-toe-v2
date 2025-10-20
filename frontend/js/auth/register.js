@@ -1,7 +1,3 @@
-/**
- * Registration functionality
- */
-
 document.getElementById('register-form').addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -10,7 +6,6 @@ document.getElementById('register-form').addEventListener('submit', async (e) =>
     const password = document.getElementById('register-password').value;
     const passwordConfirm = document.getElementById('register-password-confirm').value;
 
-    // Validation
     if (!username || !password || !passwordConfirm) {
         showError('error-message', 'Please fill in all required fields');
         return;
@@ -58,11 +53,8 @@ document.getElementById('register-form').addEventListener('submit', async (e) =>
             throw new Error(data.detail || 'Registration failed');
         }
 
-        // Store token and user info
         Storage.setToken(data.access_token);
         Storage.setUserInfo(data.user_id, data.username);
-
-        // Redirect to lobby
         window.location.href = 'lobby.html';
 
     } catch (error) {

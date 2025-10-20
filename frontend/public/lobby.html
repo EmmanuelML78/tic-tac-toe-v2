@@ -18,7 +18,6 @@
       </div>
 
       <div class="lobby-container">
-        <!-- Left Section: Online Users -->
         <div class="card">
           <h2>👥 Online Players (<span id="online-count">0</span>)</h2>
           <div id="online-users-list" class="users-list">
@@ -26,9 +25,8 @@
           </div>
         </div>
 
-        <!-- Middle Section: Play Options -->
         <div class="card">
-          <h2>🎯 Play Game</h2>
+          <h2>Play Game</h2>
 
           <div class="play-options">
             <h3>Play vs Bot</h3>
@@ -48,21 +46,20 @@
           <hr style="margin: 20px 0" />
 
           <div class="invitations-section">
-            <h3>📬 Invitations</h3>
+            <h3>Invitations</h3>
             <div id="invitations-list">
               <p class="text-center">No pending invitations</p>
             </div>
           </div>
         </div>
 
-        <!-- Right Section: Leaderboard -->
         <div class="card">
-          <h2>🏆 Leaderboard</h2>
+          <h2>Leaderboard</h2>
           <div id="leaderboard-list" class="leaderboard-list">
             <p class="text-center">Loading...</p>
           </div>
 
-          <h3 style="margin-top: 20px">📊 Your Stats</h3>
+          <h3 style="margin-top: 20px">Your Stats</h3>
           <div id="user-stats">
             <p class="text-center">Loading...</p>
           </div>
@@ -75,13 +72,9 @@
       <p>Connecting...</p>
     </div>
 
-    <!-- Socket.IO Client -->
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
-    <!-- Load configuration first -->
     <script src="../js/config.js?v=2"></script>
-    <!-- Load utilities before main scripts -->
     <script src="../js/utils/notifications.js?v=2"></script>
-    <!-- Load lobby functionality -->
     <script src="../js/lobby/lobby.js?v=2"></script>
   </body>
 </html>

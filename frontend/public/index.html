@@ -3,17 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tic-Tac-Toe Multiplayer - Login</title>
+    <title>Tic Tac Toe Multiplayer - Login</title>
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/auth.css">
 </head>
 <body>
     <div class="container">
         <div class="auth-container">
-            <h1>🎮 Tic-Tac-Toe Multiplayer</h1>
+            <h1> Tic Tac Toe</h1>
             <p class="subtitle">Network Multiplayer Game - Capstone Project</p>
 
-            <!-- Login Form -->
             <div id="loginForm" class="auth-form">
                 <h2>Login</h2>
                 <form id="login-form">
@@ -32,7 +31,6 @@
                 </form>
             </div>
 
-            <!-- Register Form -->
             <div id="registerForm" class="auth-form" style="display: none;">
                 <h2>Register</h2>
                 <form id="register-form">
@@ -74,7 +72,6 @@
     <script src="../js/auth/login.js"></script>
     <script src="../js/auth/register.js"></script>
     <script>
-        // Form switching
         document.getElementById('show-register').addEventListener('click', (e) => {
             e.preventDefault();
             document.getElementById('loginForm').style.display = 'none';

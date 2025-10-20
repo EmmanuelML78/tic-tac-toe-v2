@@ -1,7 +1,3 @@
-/**
- * Login functionality
- */
-
 document.getElementById('login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -31,11 +27,8 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
             throw new Error(data.detail || 'Login failed');
         }
 
-        // Store token and user info
         Storage.setToken(data.access_token);
         Storage.setUserInfo(data.user_id, data.username);
-
-        // Redirect to lobby
         window.location.href = 'lobby.html';
 
     } catch (error) {

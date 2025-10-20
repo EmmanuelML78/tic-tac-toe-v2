@@ -1,16 +1,5 @@
-/**
- * Notification system for toast messages
- */
-
 const Notification = {
-    /**
-     * Show a notification toast
-     * @param {string} message - Message to display
-     * @param {string} type - Type: 'success', 'error', 'info'
-     * @param {number} duration - Duration in ms (default 3000)
-     */
     show(message, type = 'info', duration = 3000) {
-        // Create notification element
         const notification = document.createElement('div');
         notification.className = `notification ${type}`;
         notification.innerHTML = `
@@ -23,10 +12,8 @@ const Notification = {
             </div>
         `;
 
-        // Add to document
         document.body.appendChild(notification);
 
-        // Auto remove after duration
         setTimeout(() => {
             notification.style.animation = 'slideOut 0.3s ease';
             setTimeout(() => {
@@ -50,7 +37,6 @@ const Notification = {
     }
 };
 
-// Show error in element
 function showError(elementId, message) {
     const element = document.getElementById(elementId);
     if (element) {
@@ -59,7 +45,6 @@ function showError(elementId, message) {
     }
 }
 
-// Hide error element
 function hideError(elementId) {
     const element = document.getElementById(elementId);
     if (element) {
@@ -67,7 +52,6 @@ function hideError(elementId) {
     }
 }
 
-// Show loading
 function showLoading() {
     const loading = document.getElementById('loading');
     if (loading) {
@@ -75,7 +59,6 @@ function showLoading() {
     }
 }
 
-// Hide loading
 function hideLoading() {
     const loading = document.getElementById('loading');
     if (loading) {
