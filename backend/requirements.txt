@@ -1,0 +1,15 @@
+fastapi
+python-socketio
+sqlalchemy
+aiofiles
+bcrypt
+pyjwt
+python-dotenv
+uvicorn[standard]
+python-multipart
+redis
+pydantic
+pydantic-settings
+python-jose[cryptography]
+passlib[bcrypt]
+aiosqlite

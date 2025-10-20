@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+  backend:
+    build: ./backend
+    container_name: tictactoe-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8000
+      - DEBUG=False
+      - DATABASE_URL=sqlite+aiosqlite:///./tictactoe.db
+      - SECRET_KEY=change-this-in-production-use-a-secure-random-key
+      - CORS_ORIGINS=*
+    volumes:
+      - ./backend/logs:/app/logs
+      - ./backend/tictactoe.db:/app/tictactoe.db
+    restart: unless-stopped
+    networks:
+      - tictactoe-network
+
+  frontend:
+    build: ./frontend
+    container_name: tictactoe-frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - tictactoe-network
+
+networks:
+  tictactoe-network:
+    driver: bridge
+
+volumes:
+  backend-logs:
+  backend-db:

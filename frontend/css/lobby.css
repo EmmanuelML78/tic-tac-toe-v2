@@ -1,0 +1,208 @@
+/* Lobby Page CSS */
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+}
+
+.header h1 {
+    margin: 0;
+    color: var(--darker-bg);
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-info span {
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.lobby-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+}
+
+/* Online Users List */
+.users-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.user-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    margin-bottom: 8px;
+    background: var(--light-bg);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.user-item:hover {
+    background: #e8e8e8;
+    transform: translateX(5px);
+}
+
+.user-item .user-name {
+    font-weight: 500;
+}
+
+.user-item .user-status {
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    background: var(--secondary-color);
+    color: white;
+}
+
+.user-item .user-status.in-game {
+    background: var(--warning-color);
+}
+
+.user-item .btn {
+    padding: 6px 12px;
+    font-size: 14px;
+}
+
+/* Play Options */
+.play-options h3 {
+    margin-bottom: 10px;
+}
+
+.bot-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.bot-options .btn {
+    width: 100%;
+}
+
+/* Invitations */
+.invitations-section {
+    margin-top: 20px;
+}
+
+.invitation-item {
+    padding: 12px;
+    margin-bottom: 10px;
+    background: #fff3cd;
+    border-radius: 8px;
+    border-left: 4px solid var(--warning-color);
+}
+
+.invitation-item p {
+    margin-bottom: 10px;
+}
+
+.invitation-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.invitation-actions .btn {
+    padding: 6px 16px;
+    font-size: 14px;
+    flex: 1;
+}
+
+/* Leaderboard */
+.leaderboard-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.leaderboard-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 8px;
+    background: var(--light-bg);
+    border-radius: 8px;
+}
+
+.leaderboard-item .rank {
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--primary-color);
+    min-width: 30px;
+}
+
+.leaderboard-item .player-info {
+    flex: 1;
+    margin-left: 10px;
+}
+
+.leaderboard-item .player-name {
+    font-weight: 600;
+    display: block;
+}
+
+.leaderboard-item .player-stats {
+    font-size: 12px;
+    color: #666;
+}
+
+.leaderboard-item .points {
+    font-weight: 600;
+    color: var(--secondary-color);
+}
+
+/* User Stats */
+#user-stats {
+    padding: 15px;
+    background: var(--light-bg);
+    border-radius: 8px;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.stat-row:last-child {
+    border-bottom: none;
+}
+
+.stat-label {
+    font-weight: 500;
+}
+
+.stat-value {
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .lobby-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .header h1 {
+        font-size: 24px;
+    }
+}

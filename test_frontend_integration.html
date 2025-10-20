@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Frontend-Backend Integration Test</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 20px;
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .header {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .header h1 {
+        color: #667eea;
+        margin-bottom: 10px;
+      }
+
+      .test-section {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .test-section h2 {
+        color: #333;
+        margin-bottom: 15px;
+        border-bottom: 2px solid #667eea;
+        padding-bottom: 10px;
+      }
+
+      .test-item {
+        padding: 10px;
+        margin: 10px 0;
+        border-left: 4px solid #ccc;
+        background: #f8f9fa;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .test-item.pass {
+        border-left-color: #28a745;
+        background: #d4edda;
+      }
+
+      .test-item.fail {
+        border-left-color: #dc3545;
+        background: #f8d7da;
+      }
+
+      .test-item.running {
+        border-left-color: #ffc107;
+        background: #fff3cd;
+      }
+
+      .status {
+        font-weight: bold;
+        padding: 5px 10px;
+        border-radius: 5px;
+      }
+
+      .status.pass {
+        color: #28a745;
+      }
+
+      .status.fail {
+        color: #dc3545;
+      }
+
+      .status.running {
+        color: #ffc107;
+      }
+
+      button {
+        background: #667eea;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: all 0.3s;
+      }
+
+      button:hover {
+        background: #5568d3;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      button:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .summary {
+        background: #667eea;
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        font-size: 1.2em;
+      }
+
+      .summary.complete {
+        background: #28a745;
+      }
+
+      .summary.incomplete {
+        background: #dc3545;
+      }
+
+      .log {
+        background: #1e1e1e;
+        color: #d4d4d4;
+        padding: 15px;
+        border-radius: 5px;
+        font-family: "Courier New", monospace;
+        font-size: 12px;
+        max-height: 300px;
+        overflow-y: auto;
+        margin-top: 10px;
+      }
+
+      .log-entry {
+        margin: 5px 0;
+      }
+
+      .log-entry.success {
+        color: #4ec9b0;
+      }
+      .log-entry.error {
+        color: #f48771;
+      }
+      .log-entry.info {
+        color: #9cdcfe;
+      }
+      .log-entry.warning {
+        color: #dcdcaa;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🔍 Frontend-Backend Integration Test</h1>
+        <p>Testing all frontend components against live backend API</p>
+      </div>
+
+      <div class="test-section">
+        <h2>🎮 Test Controls</h2>
+        <button id="start-test" onclick="runAllTests()">
+          Start Integration Tests
+        </button>
+        <button id="clear-storage" onclick="clearAllStorage()">
+          Clear Local Storage
+        </button>
+      </div>
+
+      <div id="summary" class="summary" style="display: none">
+        <div id="summary-text"></div>
+      </div>
+
+      <div class="test-section">
+        <h2>📡 Backend Connectivity Tests</h2>
+        <div id="connectivity-tests"></div>
+      </div>
+
+      <div class="test-section">
+        <h2>🔐 Authentication Flow Tests</h2>
+        <div id="auth-tests"></div>
+      </div>
+
+      <div class="test-section">
+        <h2>🔌 WebSocket Tests</h2>
+        <div id="websocket-tests"></div>
+      </div>
+
+      <div class="test-section">
+        <h2>📊 Data Loading Tests</h2>
+        <div id="data-tests"></div>
+      </div>
+
+      <div class="test-section">
+        <h2>📝 Console Log</h2>
+        <div id="console-log" class="log"></div>
+      </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script>
+      // Configuration
+      const CONFIG = {
+        API_URL: "http://localhost:8000",
+        SOCKET_URL: "http://localhost:8000",
+      };
+
+      let testResults = {
+        total: 0,
+        passed: 0,
+        failed: 0,
+      };
+
+      let testData = {
+        token: null,
+        userId: null,
+        username: null,
+      };
+
+      // Logging
+      function log(message, type = "info") {
+        const logDiv = document.getElementById("console-log");
+        const entry = document.createElement("div");
+        entry.className = `log-entry ${type}`;
+        const timestamp = new Date().toLocaleTimeString();
+        entry.textContent = `[${timestamp}] ${message}`;
+        logDiv.appendChild(entry);
+        logDiv.scrollTop = logDiv.scrollHeight;
+        console.log(message);
+      }
+
+      // Test UI
+      function createTestItem(container, name) {
+        const item = document.createElement("div");
+        item.className = "test-item running";
+        item.innerHTML = `
+                <span>${name}</span>
+                <span class="status running">RUNNING...</span>
+            `;
+        document.getElementById(container).appendChild(item);
+        return item;
+      }
+
+      function updateTestItem(item, passed, message = "") {
+        testResults.total++;
+        if (passed) {
+          testResults.passed++;
+          item.className = "test-item pass";
+          item.querySelector(".status").className = "status pass";
+          item.querySelector(".status").textContent = "✓ PASS";
+        } else {
+          testResults.failed++;
+          item.className = "test-item fail";
+          item.querySelector(".status").className = "status fail";
+          item.querySelector(".status").textContent = "✗ FAIL";
+        }
+        if (message) {
+          const detail = document.createElement("div");
+          detail.style.fontSize = "12px";
+          detail.style.marginTop = "5px";
+          detail.textContent = message;
+          item.appendChild(detail);
+        }
+      }
+
+      // Test 1: Backend Health Check
+      async function testBackendHealth() {
+        const item = createTestItem(
+          "connectivity-tests",
+          "Backend Health Check"
+        );
+        log("Testing backend health endpoint...", "info");
+
+        try {
+          const response = await fetch(`${CONFIG.API_URL}/health`);
+          const data = await response.json();
+
+          if (response.ok && data.status === "healthy") {
+            log("✓ Backend is healthy", "success");
+            updateTestItem(item, true, "Backend responding correctly");
+            return true;
+          } else {
+            log("✗ Backend unhealthy", "error");
+            updateTestItem(item, false, "Backend not responding correctly");
+            return false;
+          }
+        } catch (error) {
+          log(`✗ Backend unreachable: ${error.message}`, "error");
+          updateTestItem(item, false, `Error: ${error.message}`);
+          return false;
+        }
+      }
+
+      // Test 2: CORS Configuration
+      async function testCORS() {
+        const item = createTestItem("connectivity-tests", "CORS Configuration");
+        log("Testing CORS configuration...", "info");
+
+        try {
+          const response = await fetch(`${CONFIG.API_URL}/health`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+
+          if (response.ok) {
+            log("✓ CORS configured correctly", "success");
+            updateTestItem(item, true, "No CORS errors");
+            return true;
+          } else {
+            log("✗ CORS issue detected", "error");
+            updateTestItem(item, false, "CORS blocking requests");
+            return false;
+          }
+        } catch (error) {
+          log(`✗ CORS error: ${error.message}`, "error");
+          updateTestItem(item, false, `CORS Error: ${error.message}`);
+          return false;
+        }
+      }
+
+      // Test 3: User Registration
+      async function testRegistration() {
+        const item = createTestItem("auth-tests", "User Registration");
+        const username = `test_${Date.now()}`;
+        const password = "TestPass123!";
+
+        log(`Testing user registration with username: ${username}...`, "info");
+
+        try {
+          const response = await fetch(`${CONFIG.API_URL}/api/register`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              username: username,
+              password: password,
+              email: `${username}@test.com`,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok && data.access_token) {
+            testData.token = data.access_token;
+            testData.userId = data.user_id;
+            testData.username = data.username;
+
+            log(
+              `✓ Registration successful: User ID ${data.user_id}`,
+              "success"
+            );
+            updateTestItem(item, true, `User created: ${username}`);
+            return true;
+          } else {
+            log(`✗ Registration failed: ${data.detail}`, "error");
+            updateTestItem(item, false, data.detail || "Unknown error");
+            return false;
+          }
+        } catch (error) {
+          log(`✗ Registration error: ${error.message}`, "error");
+          updateTestItem(item, false, error.message);
+          return false;
+        }
+      }
+
+      // Test 4: Local Storage Integration
+      async function testLocalStorage() {
+        const item = createTestItem("auth-tests", "Local Storage Integration");
+        log("Testing local storage functionality...", "info");
+
+        try {
+          // Simulate what frontend does
+          localStorage.setItem("tictactoe_token", testData.token);
+          localStorage.setItem("tictactoe_user_id", testData.userId);
+          localStorage.setItem("tictactoe_username", testData.username);
+
+          const retrievedToken = localStorage.getItem("tictactoe_token");
+          const retrievedUserId = localStorage.getItem("tictactoe_user_id");
+          const retrievedUsername = localStorage.getItem("tictactoe_username");
+
+          if (
+            retrievedToken === testData.token &&
+            retrievedUserId == testData.userId &&
+            retrievedUsername === testData.username
+          ) {
+            log("✓ Local storage working correctly", "success");
+            updateTestItem(item, true, "Data persisted correctly");
+            return true;
+          } else {
+            log("✗ Local storage data mismatch", "error");
+            updateTestItem(item, false, "Data not persisting correctly");
+            return false;
+          }
+        } catch (error) {
+          log(`✗ Local storage error: ${error.message}`, "error");
+          updateTestItem(item, false, error.message);
+          return false;
+        }
+      }
+
+      // Test 5: Authenticated API Calls
+      async function testAuthenticatedAPI() {
+        const item = createTestItem("auth-tests", "Authenticated API Calls");
+        log("Testing authenticated API endpoint...", "info");
+
+        try {
+          const response = await fetch(`${CONFIG.API_URL}/api/users/me`, {
+            headers: {
+              Authorization: `Bearer ${testData.token}`,
+            },
+          });
+
+          const data = await response.json();
+
+          if (response.ok && data.id == testData.userId) {
+            log("✓ Authenticated API call successful", "success");
+            updateTestItem(item, true, `Retrieved user: ${data.username}`);
+            return true;
+          } else {
+            log("✗ Authenticated API call failed", "error");
+            updateTestItem(item, false, "Token not working");
+            return false;
+          }
+        } catch (error) {
+          log(`✗ API error: ${error.message}`, "error");
+          updateTestItem(item, false, error.message);
+          return false;
+        }
+      }
+
+      // Test 6: WebSocket Connection
+      async function testWebSocketConnection() {
+        const item = createTestItem("websocket-tests", "WebSocket Connection");
+        log("Testing WebSocket connection...", "info");
+
+        return new Promise((resolve) => {
+          try {
+            const socket = io(CONFIG.SOCKET_URL, {
+              transports: ["websocket", "polling"],
+            });
+
+            const timeout = setTimeout(() => {
+              socket.disconnect();
+              log("✗ WebSocket connection timeout", "error");
+              updateTestItem(item, false, "Connection timeout");
+              resolve(false);
+            }, 5000);
+
+            socket.on("connect", () => {
+              clearTimeout(timeout);
+              log("✓ WebSocket connected", "success");
+              updateTestItem(item, true, `Socket ID: ${socket.id}`);
+              socket.disconnect();
+              resolve(true);
+            });
+
+            socket.on("connect_error", (error) => {
+              clearTimeout(timeout);
+              log(`✗ WebSocket connection error: ${error.message}`, "error");
+              updateTestItem(item, false, error.message);
+              resolve(false);
+            });
+          } catch (error) {
+            log(`✗ WebSocket error: ${error.message}`, "error");
+            updateTestItem(item, false, error.message);
+            resolve(false);
+          }
+        });
+      }
+
+      // Test 7: WebSocket Authentication
+      async function testWebSocketAuth() {
+        const item = createTestItem(
+          "websocket-tests",
+          "WebSocket Authentication"
+        );
+        log("Testing WebSocket authentication...", "info");
+
+        return new Promise((resolve) => {
+          try {
+            const socket = io(CONFIG.SOCKET_URL, {
+              transports: ["websocket", "polling"],
+            });
+
+            const timeout = setTimeout(() => {
+              socket.disconnect();
+              log("✗ WebSocket auth timeout", "error");
+              updateTestItem(item, false, "Authentication timeout");
+              resolve(false);
+            }, 5000);
+
+            socket.on("connect", () => {
+              log("WebSocket connected, sending auth...", "info");
+              socket.emit("authenticate", { token: testData.token });
+            });
+
+            socket.on("authenticated", (data) => {
+              clearTimeout(timeout);
+              log(`✓ WebSocket authenticated: ${data.username}`, "success");
+              updateTestItem(item, true, `Authenticated as: ${data.username}`);
+              socket.disconnect();
+              resolve(true);
+            });
+
+            socket.on("auth_error", (data) => {
+              clearTimeout(timeout);
+              log(`✗ WebSocket auth failed: ${data.message}`, "error");
+              updateTestItem(item, false, data.message);
+              socket.disconnect();
+              resolve(false);
+            });
+
+            socket.on("error", (data) => {
+              clearTimeout(timeout);
+              log(`✗ WebSocket error: ${data.message}`, "error");
+              updateTestItem(item, false, data.message);
+              socket.disconnect();
+              resolve(false);
+            });
+          } catch (error) {
+            log(`✗ WebSocket auth error: ${error.message}`, "error");
+            updateTestItem(item, false, error.message);
+            resolve(false);
+          }
+        });
+      }
+
+      // Test 8: Load Stats
+      async function testLoadStats() {
+        const item = createTestItem("data-tests", "User Stats Loading");
+        log("Testing stats endpoint...", "info");
+
+        try {
+          const response = await fetch(`${CONFIG.API_URL}/api/stats`, {
+            headers: {
+              Authorization: `Bearer ${testData.token}`,
+            },
+          });
+
+          const data = await response.json();
+
+          if (response.ok && data.hasOwnProperty("total_games")) {
+            log("✓ Stats loaded successfully", "success");
+            updateTestItem(item, true, `Total games: ${data.total_games}`);
+            return true;
+          } else {
+            log("✗ Failed to load stats", "error");
+            updateTestItem(item, false, "Invalid response");
+            return false;
+          }
+        } catch (error) {
+          log(`✗ Stats error: ${error.message}`, "error");
+          updateTestItem(item, false, error.message);
+          return false;
+        }
+      }
+
+      // Test 9: Load Leaderboard
+      async function testLoadLeaderboard() {
+        const item = createTestItem("data-tests", "Leaderboard Loading");
+        log("Testing leaderboard endpoint...", "info");
+
+        try {
+          const response = await fetch(
+            `${CONFIG.API_URL}/api/stats/leaderboard?limit=10`
+          );
+          const data = await response.json();
+
+          if (response.ok && Array.isArray(data)) {
+            log("✓ Leaderboard loaded successfully", "success");
+            updateTestItem(item, true, `${data.length} players listed`);
+            return true;
+          } else {
+            log("✗ Failed to load leaderboard", "error");
+            updateTestItem(item, false, "Invalid response");
+            return false;
+          }
+        } catch (error) {
+          log(`✗ Leaderboard error: ${error.message}`, "error");
+          updateTestItem(item, false, error.message);
+          return false;
+        }
+      }
+
+      // Test 10: Frontend Config Validation
+      async function testFrontendConfig() {
+        const item = createTestItem(
+          "connectivity-tests",
+          "Frontend Config Validation"
+        );
+        log("Validating frontend configuration...", "info");
+
+        try {
+          // Check if config matches
+          const configValid =
+            CONFIG.API_URL === "http://localhost:8000" &&
+            CONFIG.SOCKET_URL === "http://localhost:8000";
+
+          if (configValid) {
+            log("✓ Frontend configuration is correct", "success");
+            updateTestItem(item, true, "Config URLs match backend");
+            return true;
+          } else {
+            log("✗ Frontend configuration mismatch", "error");
+            updateTestItem(item, false, "URLs do not match");
+            return false;
+          }
+        } catch (error) {
+          log(`✗ Config validation error: ${error.message}`, "error");
+          updateTestItem(item, false, error.message);
+          return false;
+        }
+      }
+
+      // Run all tests
+      async function runAllTests() {
+        log("=".repeat(60), "info");
+        log("STARTING FRONTEND-BACKEND INTEGRATION TESTS", "info");
+        log("=".repeat(60), "info");
+
+        testResults = { total: 0, passed: 0, failed: 0 };
+
+        // Clear previous results
+        document.getElementById("connectivity-tests").innerHTML = "";
+        document.getElementById("auth-tests").innerHTML = "";
+        document.getElementById("websocket-tests").innerHTML = "";
+        document.getElementById("data-tests").innerHTML = "";
+
+        document.getElementById("start-test").disabled = true;
+
+        // Run tests sequentially
+        await testFrontendConfig();
+        await testBackendHealth();
+        await testCORS();
+
+        const regSuccess = await testRegistration();
+        if (regSuccess) {
+          await testLocalStorage();
+          await testAuthenticatedAPI();
+          await testWebSocketConnection();
+          await testWebSocketAuth();
+          await testLoadStats();
+          await testLoadLeaderboard();
+        }
+
+        // Show summary
+        const summary = document.getElementById("summary");
+        const summaryText = document.getElementById("summary-text");
+        const percentage = (
+          (testResults.passed / testResults.total) *
+          100
+        ).toFixed(1);
+
+        summary.style.display = "block";
+        summaryText.innerHTML = `
+                <h2>Test Results</h2>
+                <p>Total: ${testResults.total} | Passed: ${testResults.passed} | Failed: ${testResults.failed}</p>
+                <p>Success Rate: ${percentage}%</p>
+            `;
+
+        if (testResults.failed === 0) {
+          summary.className = "summary complete";
+          log("=".repeat(60), "success");
+          log(
+            "🎉 ALL TESTS PASSED! Frontend-Backend integration is working!",
+            "success"
+          );
+          log("=".repeat(60), "success");
+        } else {
+          summary.className = "summary incomplete";
+          log("=".repeat(60), "error");
+          log(
+            `❌ ${testResults.failed} test(s) failed. Please check the errors above.`,
+            "error"
+          );
+          log("=".repeat(60), "error");
+        }
+
+        document.getElementById("start-test").disabled = false;
+      }
+
+      // Clear local storage
+      function clearAllStorage() {
+        localStorage.clear();
+        log("Local storage cleared", "info");
+        alert("Local storage cleared!");
+      }
+
+      // Initialize
+      log(
+        'Integration test page loaded. Click "Start Integration Tests" to begin.',
+        "info"
+      );
+    </script>
+  </body>
+</html>

@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Frontend-Backend Connection Test</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 20px;
+        background: #f5f5f5;
+      }
+      .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+      }
+      h1 {
+        margin: 0;
+        font-size: 2em;
+      }
+      .test-container {
+        background: white;
+        padding: 25px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      .test-section {
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #eee;
+      }
+      .test-section:last-child {
+        border-bottom: none;
+      }
+      h2 {
+        color: #667eea;
+        margin-top: 0;
+      }
+      .btn {
+        background: #667eea;
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        margin: 5px;
+        transition: all 0.3s;
+      }
+      .btn:hover {
+        background: #5568d3;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+      }
+      .btn:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+        transform: none;
+      }
+      .result {
+        margin-top: 15px;
+        padding: 15px;
+        border-radius: 5px;
+        font-family: "Courier New", monospace;
+        font-size: 13px;
+        white-space: pre-wrap;
+        max-height: 400px;
+        overflow-y: auto;
+      }
+      .success {
+        background: #d4edda;
+        border: 1px solid #c3e6cb;
+        color: #155724;
+      }
+      .error {
+        background: #f8d7da;
+        border: 1px solid #f5c6cb;
+        color: #721c24;
+      }
+      .info {
+        background: #d1ecf1;
+        border: 1px solid #bee5eb;
+        color: #0c5460;
+      }
+      .status {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: bold;
+        margin-left: 10px;
+      }
+      .status.online {
+        background: #28a745;
+        color: white;
+      }
+      .status.offline {
+        background: #dc3545;
+        color: white;
+      }
+      .form-group {
+        margin-bottom: 15px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 600;
+        color: #333;
+      }
+      input {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid #e0e0e0;
+        border-radius: 5px;
+        font-size: 14px;
+        box-sizing: border-box;
+      }
+      input:focus {
+        outline: none;
+        border-color: #667eea;
+      }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-top: 20px;
+      }
+      .stat-card {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+      }
+      .stat-value {
+        font-size: 2em;
+        font-weight: bold;
+        color: #667eea;
+      }
+      .stat-label {
+        color: #666;
+        font-size: 0.9em;
+        margin-top: 5px;
+      }
+      .loading {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #667eea;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-left: 10px;
+        vertical-align: middle;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>🧪 Frontend-Backend Connection Test</h1>
+      <p>Prueba completa de la conectividad entre el frontend y el backend</p>
+      <p>
+        Backend Status:
+        <span id="backend-status" class="status offline">OFFLINE</span>
+      </p>
+    </div>
+
+    <div class="test-container">
+      <!-- Test 1: Backend Health Check -->
+      <div class="test-section">
+        <h2>1. Backend Health Check</h2>
+        <button class="btn" onclick="testBackendHealth()">
+          🔍 Test Backend Connection
+        </button>
+        <div id="health-result"></div>
+      </div>
+
+      <!-- Test 2: User Registration -->
+      <div class="test-section">
+        <h2>2. User Registration</h2>
+        <div class="form-group">
+          <label for="reg-username">Username:</label>
+          <input type="text" id="reg-username" placeholder="testuser" />
+        </div>
+        <div class="form-group">
+          <label for="reg-password">Password:</label>
+          <input type="password" id="reg-password" placeholder="password123" />
+        </div>
+        <button class="btn" onclick="testRegister()">
+          ✍️ Test Registration
+        </button>
+        <div id="register-result"></div>
+      </div>
+
+      <!-- Test 3: User Login -->
+      <div class="test-section">
+        <h2>3. User Login</h2>
+        <div class="form-group">
+          <label for="login-username">Username:</label>
+          <input type="text" id="login-username" placeholder="testuser" />
+        </div>
+        <div class="form-group">
+          <label for="login-password">Password:</label>
+          <input
+            type="password"
+            id="login-password"
+            placeholder="password123" />
+        </div>
+        <button class="btn" onclick="testLogin()">🔐 Test Login</button>
+        <div id="login-result"></div>
+      </div>
+
+      <!-- Test 4: Get User Profile -->
+      <div class="test-section">
+        <h2>4. Get User Profile (Requires Login)</h2>
+        <button class="btn" onclick="testGetProfile()">👤 Get Profile</button>
+        <div id="profile-result"></div>
+      </div>
+
+      <!-- Test 5: WebSocket Connection -->
+      <div class="test-section">
+        <h2>5. WebSocket Connection Test</h2>
+        <button class="btn" onclick="testWebSocket()">🔌 Test WebSocket</button>
+        <button class="btn" onclick="disconnectWebSocket()">
+          ❌ Disconnect
+        </button>
+        <div id="websocket-result"></div>
+      </div>
+
+      <!-- Test 6: Create Game -->
+      <div class="test-section">
+        <h2>6. Create Game (Requires Login)</h2>
+        <button class="btn" onclick="testCreateGame()">🎮 Create Game</button>
+        <div id="game-result"></div>
+      </div>
+
+      <!-- Test 7: Get Active Games -->
+      <div class="test-section">
+        <h2>7. Get Active Games</h2>
+        <button class="btn" onclick="testGetGames()">📋 Get Games List</button>
+        <div id="games-result"></div>
+      </div>
+
+      <!-- Test 8: Run All Tests -->
+      <div class="test-section">
+        <h2>🚀 Run All Tests</h2>
+        <button class="btn" onclick="runAllTests()">▶️ Run All Tests</button>
+        <button class="btn" onclick="clearAllResults()">
+          🗑️ Clear Results
+        </button>
+        <div id="all-tests-result"></div>
+      </div>
+    </div>
+
+    <script>
+      const API_URL = "http://localhost:8000";
+      let authToken = null;
+      let ws = null;
+
+      // Check backend health
+      async function testBackendHealth() {
+        const resultDiv = document.getElementById("health-result");
+        resultDiv.innerHTML = '<div class="loading"></div> Checking backend...';
+
+        try {
+          const response = await fetch(`${API_URL}/health`);
+          const data = await response.json();
+
+          if (response.ok) {
+            resultDiv.innerHTML = `<div class="result success">✅ Backend is online!\n${JSON.stringify(
+              data,
+              null,
+              2
+            )}</div>`;
+            document.getElementById("backend-status").className =
+              "status online";
+            document.getElementById("backend-status").textContent = "ONLINE";
+          } else {
+            throw new Error("Backend returned error");
+          }
+        } catch (error) {
+          resultDiv.innerHTML = `<div class="result error">❌ Backend is offline or unreachable\nError: ${error.message}</div>`;
+          document.getElementById("backend-status").className =
+            "status offline";
+          document.getElementById("backend-status").textContent = "OFFLINE";
+        }
+      }
+
+      // Test registration
+      async function testRegister() {
+        const username =
+          document.getElementById("reg-username").value ||
+          `testuser_${Date.now()}`;
+        const password =
+          document.getElementById("reg-password").value || "password123";
+        const resultDiv = document.getElementById("register-result");
+
+        resultDiv.innerHTML = '<div class="loading"></div> Registering user...';
+
+        try {
+          const response = await fetch(`${API_URL}/api/register`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ username, password }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            authToken = data.access_token;
+            resultDiv.innerHTML = `<div class="result success">✅ Registration successful!
+Username: ${data.username}
+User ID: ${data.user_id}
+Token: ${data.access_token.substring(0, 20)}...
+Token Type: ${data.token_type}</div>`;
+          } else {
+            resultDiv.innerHTML = `<div class="result error">❌ Registration failed\n${JSON.stringify(
+              data,
+              null,
+              2
+            )}</div>`;
+          }
+        } catch (error) {
+          resultDiv.innerHTML = `<div class="result error">❌ Error: ${error.message}</div>`;
+        }
+      }
+
+      // Test login
+      async function testLogin() {
+        const username =
+          document.getElementById("login-username").value || "testuser";
+        const password =
+          document.getElementById("login-password").value || "password123";
+        const resultDiv = document.getElementById("login-result");
+
+        resultDiv.innerHTML = '<div class="loading"></div> Logging in...';
+
+        try {
+          const response = await fetch(`${API_URL}/api/login`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ username, password }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            authToken = data.access_token;
+            resultDiv.innerHTML = `<div class="result success">✅ Login successful!
+Username: ${data.username}
+User ID: ${data.user_id}
+Token: ${data.access_token.substring(0, 20)}...
+Token Type: ${data.token_type}</div>`;
+          } else {
+            resultDiv.innerHTML = `<div class="result error">❌ Login failed\n${JSON.stringify(
+              data,
+              null,
+              2
+            )}</div>`;
+          }
+        } catch (error) {
+          resultDiv.innerHTML = `<div class="result error">❌ Error: ${error.message}</div>`;
+        }
+      }
+
+      // Test get profile
+      async function testGetProfile() {
+        const resultDiv = document.getElementById("profile-result");
+
+        if (!authToken) {
+          resultDiv.innerHTML =
+            '<div class="result error">❌ Please login first!</div>';
+          return;
+        }
+
+        resultDiv.innerHTML = '<div class="loading"></div> Getting profile...';
+
+        try {
+          const response = await fetch(`${API_URL}/api/users/me`, {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+            },
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            resultDiv.innerHTML = `<div class="result success">✅ Profile retrieved!
+${JSON.stringify(data, null, 2)}</div>`;
+          } else {
+            resultDiv.innerHTML = `<div class="result error">❌ Failed to get profile\n${JSON.stringify(
+              data,
+              null,
+              2
+            )}</div>`;
+          }
+        } catch (error) {
+          resultDiv.innerHTML = `<div class="result error">❌ Error: ${error.message}</div>`;
+        }
+      }
+
+      // Test WebSocket
+      function testWebSocket() {
+        const resultDiv = document.getElementById("websocket-result");
+
+        if (!authToken) {
+          resultDiv.innerHTML =
+            '<div class="result error">❌ Please login first!</div>';
+          return;
+        }
+
+        resultDiv.innerHTML =
+          '<div class="loading"></div> Connecting to WebSocket...';
+
+        try {
+          ws = io(API_URL, {
+            auth: {
+              token: authToken,
+            },
+          });
+
+          ws.on("connect", () => {
+            resultDiv.innerHTML = `<div class="result success">✅ WebSocket connected!
+Socket ID: ${ws.id}
+Status: Connected</div>`;
+          });
+
+          ws.on("disconnect", () => {
+            resultDiv.innerHTML += "\n\n⚠️ WebSocket disconnected";
+          });
+
+          ws.on("error", (error) => {
+            resultDiv.innerHTML = `<div class="result error">❌ WebSocket error: ${error}</div>`;
+          });
+        } catch (error) {
+          resultDiv.innerHTML = `<div class="result error">❌ Error: ${error.message}\n\nNote: Make sure Socket.IO client library is loaded</div>`;
+        }
+      }
+
+      function disconnectWebSocket() {
+        if (ws) {
+          ws.disconnect();
+          document.getElementById("websocket-result").innerHTML +=
+            "\n\n✅ Disconnected from WebSocket";
+        }
+      }
+
+      // Test create game
+      async function testCreateGame() {
+        const resultDiv = document.getElementById("game-result");
+
+        if (!authToken) {
+          resultDiv.innerHTML =
+            '<div class="result error">❌ Please login first!</div>';
+          return;
+        }
+
+        resultDiv.innerHTML = '<div class="loading"></div> Creating game...';
+
+        try {
+          const response = await fetch(`${API_URL}/api/games/create`, {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              game_type: "pvp",
+              is_private: false,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            resultDiv.innerHTML = `<div class="result success">✅ Game created!
+${JSON.stringify(data, null, 2)}</div>`;
+          } else {
+            resultDiv.innerHTML = `<div class="result error">❌ Failed to create game\n${JSON.stringify(
+              data,
+              null,
+              2
+            )}</div>`;
+          }
+        } catch (error) {
+          resultDiv.innerHTML = `<div class="result error">❌ Error: ${error.message}</div>`;
+        }
+      }
+
+      // Test get games
+      async function testGetGames() {
+        const resultDiv = document.getElementById("games-result");
+        resultDiv.innerHTML = '<div class="loading"></div> Getting games...';
+
+        try {
+          const headers = {};
+          if (authToken) {
+            headers["Authorization"] = `Bearer ${authToken}`;
+          }
+
+          const response = await fetch(`${API_URL}/api/games/list`, {
+            headers,
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            resultDiv.innerHTML = `<div class="result success">✅ Games retrieved!
+Found ${data.length} active game(s)
+${JSON.stringify(data, null, 2)}</div>`;
+          } else {
+            resultDiv.innerHTML = `<div class="result error">❌ Failed to get games\n${JSON.stringify(
+              data,
+              null,
+              2
+            )}</div>`;
+          }
+        } catch (error) {
+          resultDiv.innerHTML = `<div class="result error">❌ Error: ${error.message}</div>`;
+        }
+      }
+
+      // Run all tests
+      async function runAllTests() {
+        const resultDiv = document.getElementById("all-tests-result");
+        resultDiv.innerHTML =
+          '<div class="result info">🚀 Running all tests...</div>';
+
+        // Generate unique username
+        const username = `test_${Date.now()}`;
+        const password = "password123";
+
+        document.getElementById("reg-username").value = username;
+        document.getElementById("reg-password").value = password;
+        document.getElementById("login-username").value = username;
+        document.getElementById("login-password").value = password;
+
+        let results = [];
+
+        // Test 1: Health Check
+        await testBackendHealth();
+        await sleep(1000);
+
+        // Test 2: Registration
+        await testRegister();
+        await sleep(1000);
+
+        // Test 3: Profile
+        await testGetProfile();
+        await sleep(1000);
+
+        // Test 4: Create Game
+        await testCreateGame();
+        await sleep(1000);
+
+        // Test 5: Get Games
+        await testGetGames();
+        await sleep(1000);
+
+        resultDiv.innerHTML =
+          '<div class="result success">✅ All tests completed! Check individual sections for results.</div>';
+      }
+
+      function clearAllResults() {
+        document.querySelectorAll('[id$="-result"]').forEach((div) => {
+          div.innerHTML = "";
+        });
+      }
+
+      function sleep(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+      }
+
+      // Auto-check backend on load
+      window.addEventListener("load", () => {
+        testBackendHealth();
+      });
+    </script>
+
+    <!-- Socket.IO Client (for WebSocket test) -->
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  </body>
+</html>

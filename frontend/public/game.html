@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game - Tic-Tac-Toe</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/game.css">
+</head>
+<body>
+    <div class="container">
+        <div class="game-header">
+            <button onclick="returnToLobby()" class="btn btn-danger">Leave Game</button>
+            <h1>🎮 Tic-Tac-Toe</h1>
+            <div id="game-status"></div>
+        </div>
+
+        <div class="game-container">
+            <!-- Game Board -->
+            <div class="game-board-section">
+                <div class="players-info">
+                    <div id="player1-info" class="player-info">
+                        <div class="player-symbol">X</div>
+                        <div class="player-details">
+                            <div class="player-name" id="player1-name">Player 1</div>
+                            <div class="turn-indicator" id="player1-turn"></div>
+                        </div>
+                    </div>
+
+                    <div class="vs">VS</div>
+
+                    <div id="player2-info" class="player-info">
+                        <div class="player-symbol">O</div>
+                        <div class="player-details">
+                            <div class="player-name" id="player2-name">Player 2</div>
+                            <div class="turn-indicator" id="player2-turn"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="turn-display" class="turn-display">
+                    Waiting for game to start...
+                </div>
+
+                <div id="game-board" class="game-board">
+                    <div class="cell" data-index="0"></div>
+                    <div class="cell" data-index="1"></div>
+                    <div class="cell" data-index="2"></div>
+                    <div class="cell" data-index="3"></div>
+                    <div class="cell" data-index="4"></div>
+                    <div class="cell" data-index="5"></div>
+                    <div class="cell" data-index="6"></div>
+                    <div class="cell" data-index="7"></div>
+                    <div class="cell" data-index="8"></div>
+                </div>
+
+                <div class="game-actions">
+                    <button id="forfeit-btn" class="btn btn-warning">Forfeit Game</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Over Modal -->
+    <div id="game-over-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h2 id="game-result-title">Game Over!</h2>
+            <p id="game-result-message"></p>
+            <div class="modal-actions">
+                <button onclick="returnToLobby()" class="btn btn-primary">Return to Lobby</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="loading" class="loading" style="display: none;">
+        <div class="spinner"></div>
+        <p>Connecting...</p>
+    </div>
+
+    <!-- Socket.IO Client -->
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/utils/notifications.js"></script>
+    <script src="../js/game/game.js"></script>
+</body>
+</html>
