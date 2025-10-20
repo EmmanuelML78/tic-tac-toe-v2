@@ -69,7 +69,7 @@ class GameManager:
             self.active_games[game.id] = {
                 'game': game,
                 'player1_id': player1_id,
-                'player2_id': player2_id,
+                'player2_id': player2_id if player2_id else 0,  # Use 0 for bot
                 'is_bot_game': is_bot_game,
                 'bot_difficulty': bot_difficulty,
                 'board': game.board_state,
@@ -113,7 +113,9 @@ class GameManager:
             game_data = self.active_games[game_id]
 
             # Validate it's player's turn
+            logger.info(f"make_move validation: game_id={game_id}, player_id={player_id}, current_turn={game_data['current_turn']}")
             if game_data['current_turn'] != player_id:
+                logger.error(f"Turn validation failed: current_turn={game_data['current_turn']}, player_id={player_id}")
                 raise ValueError("Not your turn")
 
             # Validate move
@@ -154,14 +156,11 @@ class GameManager:
                 await self._end_game(game_id, None, 'draw', db)
             else:
                 # Switch turn
-                if game_data['is_bot_game']:
-                    game_data['current_turn'] = game_data['player2_id'] or 0
-                else:
-                    game_data['current_turn'] = (
-                        game_data['player2_id']
-                        if player_id == game_data['player1_id']
-                        else game_data['player1_id']
-                    )
+                game_data['current_turn'] = (
+                    game_data['player2_id']
+                    if player_id == game_data['player1_id']
+                    else game_data['player1_id']
+                )
 
             # Update game in database
             await db.execute(
@@ -198,32 +197,39 @@ class GameManager:
         Returns:
             Dictionary with bot move result
         """
-        async with self._lock:
-            if game_id not in self.active_games:
-                raise ValueError("Game not found")
+        # Get game data without lock first
+        if game_id not in self.active_games:
+            raise ValueError("Game not found")
 
-            game_data = self.active_games[game_id]
+        game_data = self.active_games[game_id]
+        
+        logger.info(f"Bot game data: player1_id={game_data['player1_id']}, player2_id={game_data['player2_id']}, current_turn={game_data['current_turn']}")
 
-            if not game_data['is_bot_game']:
-                raise ValueError("Not a bot game")
+        if not game_data['is_bot_game']:
+            raise ValueError("Not a bot game")
 
-            if not game_data['bot_ai']:
-                raise ValueError("Bot AI not initialized")
+        if not game_data['bot_ai']:
+            raise ValueError("Bot AI not initialized")
 
-            # Get bot's best move
-            board = game_data['board']
-            position = game_data['bot_ai'].get_best_move(board)
+        # Get bot's best move
+        board = game_data['board']
+        position = game_data['bot_ai'].get_best_move(board)
+        logger.info(f"Bot selected position: {position}")
 
-            # Make the move as player 2 (bot)
-            # We temporarily set bot as current turn
-            original_turn = game_data['current_turn']
-            game_data['current_turn'] = game_data['player1_id']  # Bot is always player 2
+        # Bot is always player 2 (we use ID 0 for bot)
+        bot_player_id = game_data['player2_id']
+        logger.info(f"Bot player ID: {bot_player_id}, attempting move at position {position}")
+        
+        # Call make_move which has its own lock
+        result = await self.make_move(game_id, bot_player_id, position, db)
+        logger.info(f"Bot move result: {result}")
+        
+        # Add the position to the result
+        result['position'] = position
 
-            result = await self.make_move(game_id, game_data['player1_id'], position, db)
+        logger.info(f"Bot move in game {game_id}: pos={position}")
 
-            logger.info(f"Bot move in game {game_id}: pos={position}")
-
-            return result
+        return result
 
     async def forfeit_game(
         self,
